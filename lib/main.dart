@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:zonapelajar/bottom_bar.dart';
 
 void main() {
   runApp(MyApp());
@@ -91,6 +92,12 @@ class _MyHomePageState extends State<MyHomePage> with SingleTickerProviderStateM
           ),
         ],
       ),
+     floatingActionButton: FloatingActionButton(onPressed: () {},
+      backgroundColor: Color(0xFFF17532),
+      child: Icon(Icons.add),
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+      bottomNavigationBar: BottomBar(),
     );
   }
 }
