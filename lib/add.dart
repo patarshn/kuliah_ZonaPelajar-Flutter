@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:date_time_format/date_time_format.dart';
 import 'package:zonapelajar/add_schedule.dart';
+import 'package:zonapelajar/add_task.dart';
 import 'package:zonapelajar/bottom_bar.dart';
 
 void main() => runApp(new MaterialApp(
@@ -26,32 +27,22 @@ class _AddState extends State<Add> {
             children: <Widget>[
               Container(
                 width: MediaQuery.of(context).size.width,
-                height: MediaQuery.of(context).size.height/2,
+                height: MediaQuery.of(context).size.height/2-30,
                 color: Color.fromARGB(255, 50,57,67),
                 padding: EdgeInsets.all(15.0),
                 child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: <Widget>[
                     Padding(
                       padding: EdgeInsets.only(left: 15.0,right: 15.0, top: 15.0),
                       child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
                         children: <Widget>[
-                          Text("Welcome, ", textAlign: TextAlign.left, style: TextStyle(fontWeight: FontWeight.bold, fontSize: 30.0, color: Colors.white),),
-                          Text("Yosua", textAlign: TextAlign.left, style: TextStyle(fontWeight: FontWeight.bold, fontSize: 30.0, color: Colors.orange),),
-                          Text("!", textAlign: TextAlign.left, style: TextStyle(fontWeight: FontWeight.bold, fontSize: 30.0, color: Colors.white),),
+                          Image.asset('assets/illustration_addnew.png',width: 200,height: 200,)
                         ],
                       ),
                     ),
-                    Padding(
-                      padding: EdgeInsets.only(left: 15.0, right: 15.0, top: 15.0),
-                      child: Row(
-                        children: <Widget>[
-                          Text("It's ", textAlign: TextAlign.left, style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20.0, color: Colors.white),),
-                          Text(DateTimeFormat.format(dateTime, format: 'l')+", ", textAlign: TextAlign.left, style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20.0, color: Colors.orange),),
-                          Text(DateTimeFormat.format(dateTime, format: 'H:i'), textAlign: TextAlign.left, style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20.0, color: Colors.white),),
-                        ],
-                      ),
-                    ),
+                    
                   ],
                 ),
               ),
@@ -101,7 +92,10 @@ class _AddState extends State<Add> {
         child: InkWell(
           splashColor: Colors.blue.withAlpha(30),
           onTap: () {
-            Navigator.of(context).pushNamed('/addtask');
+            Navigator.of(context)
+                .push(MaterialPageRoute<Null>(builder: (BuildContext context) {
+                  return new AddTask();
+            }));
           },
           child: Container(
             width: MediaQuery.of(context).size.width/2 - 30.0,

@@ -54,7 +54,7 @@ void initState() {
             children: <Widget>[
               Container(
                 width: MediaQuery.of(context).size.width,
-                height: MediaQuery.of(context).size.height/2,
+                height: MediaQuery.of(context).size.height/2 - 30,
                 color: Color.fromARGB(255, 50,57,67),
                 padding: EdgeInsets.all(15.0),
                 child: Column(
@@ -212,6 +212,7 @@ void initState() {
         BottomNavigationBarItem(
           icon: Icon(Icons.person),
           title: Text('Person'),
+          
         ),
       ],
       showSelectedLabels: false,
