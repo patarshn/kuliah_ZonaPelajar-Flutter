@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import 'package:zonapelajar/bottom_bar.dart';
+import 'package:zonapelajar/login.dart';
 import 'package:zonapelajar/my_schedule.dart';
 import 'package:zonapelajar/my_task.dart';
 import 'package:zonapelajar/add_new.dart';
@@ -16,11 +17,12 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: Register(),
+      home: Login(),
       routes: <String, WidgetBuilder>{
       '/myschedule' : (BuildContext context) => new MySchedule(),
       '/mytask' : (BuildContext context) => new MyTask(),
       '/addnew' : (BuildContext context) => new AddNew(),
+      '/home' : (BuildContext context) => new MyHomePage(),
     },
     );
   }

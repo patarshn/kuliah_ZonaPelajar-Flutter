@@ -35,7 +35,8 @@ class _LoginState extends State<Login> {
        body: {"email": email, "password": password});
    String status = response.body;
    if (status == "1") {
-     _showDialog("Berhasil Login...");
+     //_showDialog("Berhasil Login...");
+     Navigator.of(context).pushReplacementNamed('/home');
    } else if (status == "0") {
      _showDialog("Email atau Password Anda Salah....");
    } else {
@@ -48,7 +49,7 @@ class _LoginState extends State<Login> {
               context: context,
               builder: (BuildContext context){
                 return AlertDialog(
-                  backgroundColor: Colors.deepPurple,
+                  backgroundColor: Color(0xFF323943),
                   shape: ContinuousRectangleBorder(
                     borderRadius: BorderRadius.all(Radius.circular(20))
                   ),

@@ -47,7 +47,7 @@ class _RegisterState extends State<Register> {
               context: context,
               builder: (BuildContext context){
                 return AlertDialog(
-                  backgroundColor: Colors.deepPurple,
+                  backgroundColor: Color(0xFF323943),
                   shape: ContinuousRectangleBorder(
                     borderRadius: BorderRadius.all(Radius.circular(20))
                   ),
@@ -60,7 +60,7 @@ class _RegisterState extends State<Register> {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
-                    Text("Close", style: new TextStyle(color: Colors.deepPurple)),
+                    Text("Close", style: new TextStyle(color: Color(0xFF323943))),
                   ],
                 ),
                 onPressed: () {
