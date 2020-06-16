@@ -1,198 +1,278 @@
-import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-
+//dari arie
 import 'package:zonapelajar/bottom_bar.dart';
-import 'package:zonapelajar/my_schedule.dart';
-import 'package:zonapelajar/my_task.dart';
-import 'package:zonapelajar/add_new.dart';
-import 'package:zonapelajar/register.dart';
-void main() {
-  runApp(MyApp());
+import 'package:http/http.dart' as http;
+import 'package:flutter/material.dart';
+import 'register.dart';
+import 'package:dropdown_formfield/dropdown_formfield.dart';
+import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
+
+
+
+void main() => runApp(new MaterialApp(
+  home: new Login(),
+  debugShowCheckedModeBanner: false,
+));
+
+class Login extends StatefulWidget {
+  @override
+  _LoginState createState() => new _LoginState();
 }
 
-class MyApp extends StatelessWidget {
-  // This widget is the root of your application.
-  @override
+class _LoginState extends State<Login> {
+ String hari, nama, ruang, jam = "00:00", _jam = "00:00";
+ final _key = new GlobalKey<FormState>();
+ void _setJam() {
+    setState(() => jam = _jam);
+}
+ bool _secureText = true;
+
+ showHide() {
+   setState(() {
+     _secureText = !_secureText;
+   });
+ }
+ check() {
+   final form = _key.currentState;
+   if (form.validate()) {
+     form.save();
+     login();
+   }
+ }
+ login() async {
+   final response = await http.post("https://panel.serarinne.my.id/zonapelajar/ischedule.php",
+       body: {"nama": nama, "ruang": ruang, "jam": jam, "hari": hari});
+   String status = response.body;
+   if (status == "1") {
+     _showDialog("Berhasil Login...");
+   } else if (status == "0") {
+     _showDialog("Email atau Password Anda Salah....");
+   } else {
+     _showDialog("Terjadi Kesalahan, Silahkan Ulangi Lagi...");
+   }
+ }
+
+ void _showDialog (String message) {
+    showDialog(
+              context: context,
+              builder: (BuildContext context){
+                return AlertDialog(
+                  backgroundColor: Colors.deepPurple,
+                  shape: ContinuousRectangleBorder(
+                    borderRadius: BorderRadius.all(Radius.circular(20))
+                  ),
+                  content: Text(message, style: TextStyle(color: Colors.white),),
+                  actions: <Widget>[
+                    new FlatButton(
+                shape: RoundedRectangleBorder(borderRadius:BorderRadius.circular(22.0) ),
+                color: Colors.white,
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    Text("Close", style: new TextStyle(color: Colors.deepPurple)),
+                  ],
+                ),
+                onPressed: () {
+                        Navigator.of(context).pop();
+                      },
+              ),
+                  ],
+                );
+              }
+          );
+  }
+
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      home: Register(),
-      routes: <String, WidgetBuilder>{
-      '/myschedule' : (BuildContext context) => new MySchedule(),
-      '/mytask' : (BuildContext context) => new MyTask(),
-      '/addnew' : (BuildContext context) => new AddNew(),
-    },
+    return SafeArea(
+      child:Scaffold(
+        appBar: AppBar(title: Text("Add Schedule", style: TextStyle(color: Colors.black),), backgroundColor: Colors.white,),
+        body: SingleChildScrollView(
+          child: Center(
+            child: Container(
+              width: MediaQuery.of(context).size.width,
+              height: MediaQuery.of(context).size.height,
+              color: Colors.white,
+              alignment: Alignment.center,
+              padding: EdgeInsets.all(15.0),
+              child:Column(
+                children: <Widget>[
+                  Container(
+                    margin: const EdgeInsets.only(left: 20.0, right: 20.0),
+                    padding: const EdgeInsets.only(left: 10.0, right: 10.0),
+                    child: Column(
+                      children: <Widget>[
+                        Form(
+                          key: _key,
+                          child: Column(
+                            children: <Widget>[
+                              DropDownFormField(
+                                titleText: "Select Day",
+                                hintText: 'Day',
+                                value: hari,
+                                validator: (value) {
+                                  if (value.isEmpty) {
+                                    return "Please select day";
+                                  }
+                                },
+                                onSaved: (value) {
+                                  setState(() {
+                                    hari = value;
+                                  });
+                                },
+                                onChanged: (value) {
+                                  setState(() {
+                                    hari = value;
+                                  });
+                                },
+                                dataSource: [
+                                  {
+                                    "display": "Monday",
+                                    "value": "Monday",
+                                  },
+                                  {
+                                    "display": "Tuesday",
+                                    "value": "Tuesday",
+                                  },
+                                  {
+                                    "display": "Wednesday",
+                                    "value": "Wednesday",
+                                  },
+                                  {
+                                    "display": "Thursday",
+                                    "value": "Thursday",
+                                  },
+                                  {
+                                    "display": "Friday",
+                                    "value": "Friday",
+                                  },
+                                ],
+                                textField: 'display',
+                                valueField: 'value',
+                              ),
+                              TextFormField(
+                                validator: (e) {
+                                  if (e.isEmpty) {
+                                    return "Please insert name";
+                                  }
+                                },
+                                onSaved: (e) => nama = e,
+                                decoration: InputDecoration(
+                                  labelText: "Course Name",
+                                ),
+                              ),
+                              TextFormField(
+                                validator: (e) {
+                                  if (e.isEmpty) {
+                                    return "Please insert class";
+                                  }
+                                },
+                                onSaved: (e) => ruang = e,
+                                decoration: InputDecoration(
+                                  labelText: "Class",
+                                ),
+                              ),
+                              FlatButton(
+                onPressed: () {
+                  DatePicker.showPicker(context, showTitleActions: true, onChanged: (date) {
+                    _jam = date.hour.toString() + ":" + date.minute.toString();
+                    _setJam();
+                  }, onConfirm: (date) {
+                    _jam = date.hour.toString() + ":" + date.minute.toString();
+                    _setJam();
+                  }, pickerModel: CustomPicker(currentTime: DateTime.now()), locale: LocaleType.id);
+                },
+                child: Text(
+                  'Select Time : $_jam',
+                  style: TextStyle(color: Colors.blue),
+                )),
+                              MaterialButton(
+                                onPressed: () {
+                                  check();
+                                },
+                                child: Text("Save"),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+      ),
     );
   }
 }
 
-class MyHomePage extends StatefulWidget {
-  @override
-  _MyHomePageState createState() => _MyHomePageState();
-}
+class CustomPicker extends CommonPickerModel {
+  String digits(int value, int length) {
+    return '$value'.padLeft(length, "0");
+  }
 
-class _MyHomePageState extends State<MyHomePage> with SingleTickerProviderStateMixin{
-  TabController _tabController;
-  
-  @override
-  void initState(){
-    super.initState();
-    _tabController = TabController(length: 3,vsync: this);
+  CustomPicker({DateTime currentTime, LocaleType locale}) : super(locale: locale) {
+    this.currentTime = currentTime ?? DateTime.now();
+    this.setLeftIndex(this.currentTime.hour);
+    this.setMiddleIndex(this.currentTime.minute);
+    this.setRightIndex(this.currentTime.second);
   }
 
   @override
-  Widget build(BuildContext context){
-    return Scaffold(
-      extendBody: true,
-      backgroundColor: Color(0xFF323943),
-      /*appBar: AppBar(
-        backgroundColor: Colors.white,
-        elevation: 0.0,
-        centerTitle: true,
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: Color(0xFF545D68)),
-          onPressed: (){},
-        ),
-        title: Text('Home',
-        style: TextStyle(fontFamily: 'Varela', fontSize: 20.0, color: Color(0xFF545D68)),
-        ),
-        actions: <Widget>[
-          IconButton(
-            icon: Icon(Icons.notifications_none, color: Color(0xFF545D68)),
-            onPressed: (){},
-          ),
-        ],
-      ),*/
-      body: Column(
-            mainAxisSize: MainAxisSize.max,
-        children: <Widget>[
-          Container(
-            padding: EdgeInsets.only(left:20.0,right: 20.0,top: 20.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                SizedBox(height: 10.0),
-                new RichText(
-                  text: new TextSpan(
-                    style: new TextStyle(fontFamily: 'Velera', fontSize: 38.0,fontWeight: FontWeight.bold),
-                    children: <TextSpan>[
-                      new TextSpan(text: 'Welcome '),
-                      new TextSpan(text: 'Yosua!', style: new TextStyle(fontWeight: FontWeight.bold,color: Color(0xFFF7AF39)),),
-                    ],
-                  ),
-                ),
-          SizedBox(height: 15.0),
-          new RichText(
-                  text: new TextSpan(
-                    style: new TextStyle(fontFamily: 'Velera', fontSize: 26.0,fontWeight: FontWeight.bold),
-                    children: <TextSpan>[
-                      new TextSpan(text: "It's "),
-                      new TextSpan(text: 'Tuesday ', style: new TextStyle(fontWeight: FontWeight.bold,color: Color(0xFFF7AF39)),),
-                      new TextSpan(text: '07:30'),
-                    ],
-                  ),
-                ),
-          SizedBox(height: 15.0),
-          TabBar(
-            controller: _tabController,
-            indicatorColor: Colors.transparent,
-            labelColor: Color(0xFFC88D67),
-            isScrollable: true,
-            labelPadding: EdgeInsets.only(right: 45.0),
-            unselectedLabelColor: Color(0xFFCDCDCD),
-            tabs: [
-              Tab(
-                child: Text('07.30',
-                style: TextStyle(fontFamily: 'Varela', fontSize: 21.0)
-                ),
-              ),
+  String leftStringAtIndex(int index) {
+    if (index >= 0 && index < 24) {
+      return this.digits(index, 2);
+    } else {
+      return null;
+    }
+  }
 
-              Tab(
-                child: Text('Hello World 2',
-                style: TextStyle(fontFamily: 'Varela', fontSize: 21.0)
-                ),
-              ),
+  @override
+  String middleStringAtIndex(int index) {
+    if (index >= 0 && index < 60) {
+      return this.digits(index, 2);
+    } else {
+      return null;
+    }
+  }
 
-              Tab(
-                child: Text('Hello World 3',
-                style: TextStyle(fontFamily: 'Varela', fontSize: 21.0)
-                ),
-              ),
-            ],
-          ),
-              ],
-            ),
-          ),
-          Expanded(
-            child: Container(
-              decoration: BoxDecoration(borderRadius: BorderRadius.only(topRight: Radius.circular(30), topLeft: Radius.circular(30)), color: Colors.white),
-              child: 
-              Column(
-                //mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: <Widget>[
-                  SizedBox(height: 50.0),
-                  Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              
-                children: <Widget>[
-                  Card(
-        child: InkWell(
-          splashColor: Colors.blue.withAlpha(30),
-          onTap: () {
-            Navigator.of(context).pushNamed('/myschedule');
-          },
-          child: Container(
-            width: MediaQuery.of(context).size.width/2 - 30.0,
-              height: MediaQuery.of(context).size.width/2,
-            child: 
-            Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-              children: <Widget>[
-                Icon(Icons.access_time, size: 70.0,color: Color(0xFFF7AF39)),
-                SizedBox(height:10),
-                Text("My Schedule", style: TextStyle(fontSize: 20)),
-              ],
-            ),
-          ),
-        ),
-      ),Card(
-        child: InkWell(
-          splashColor: Colors.blue.withAlpha(30),
-          onTap: () {
-            Navigator.of(context).pushNamed('/mytask');
-          },
-          child: Container(
-            width: MediaQuery.of(context).size.width/2 - 30.0,
-              height: MediaQuery.of(context).size.width/2,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-              children: <Widget>[
-                Icon(Icons.format_list_numbered, size: 70.0,color: Color(0xFFF7AF39)),
-                SizedBox(height:10),
-                Text("My Task", style: TextStyle(fontSize: 20)),
-              ],
-            ),
-          ),
-        ),
-      ),
-                ],
-              ),
-                ],  
-              ),
-              
-            ),
-          
-          ),
-        ],
-      ),
-      
-     floatingActionButton: FloatingActionButton(
-      onPressed: () {
-        Navigator.of(context).pushNamed('/addnew');
-      },
+  @override
+  String rightStringAtIndex(int index) {
+    if (index >= 0 && index < 60) {
+      return this.digits(index, 2);
+    } else {
+      return null;
+    }
+  }
+
+  @override
+  String leftDivider() {
+    return "|";
+  }
+
+  @override
+  String rightDivider() {
+    return "|";
+  }
+
+  @override
+  List<int> layoutProportions() {
+    return [1, 2, 1];
+  }
+
+  @override
+  DateTime finalTime() {
+    return currentTime.isUtc
+        ? DateTime.utc(currentTime.year, currentTime.month, currentTime.day,
+            this.currentLeftIndex(), this.currentMiddleIndex(), this.currentRightIndex())
+        : DateTime(currentTime.year, currentTime.month, currentTime.day, this.currentLeftIndex(),
+            this.currentMiddleIndex(), this.currentRightIndex());
+  }
+  
+  floatingActionButton: FloatingActionButton(onPressed: () {
+                                  check();
+                                },,
       backgroundColor: Color(0xFFF7AF39),
       child: Icon(Icons.add),
       ),
@@ -200,4 +280,5 @@ class _MyHomePageState extends State<MyHomePage> with SingleTickerProviderStateM
       bottomNavigationBar: BottomBar(),
     );
   }
+  
 }
