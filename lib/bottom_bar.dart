@@ -4,7 +4,7 @@ class BottomBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BottomAppBar(
-      shape: CircularNotchedRectangle(),
+      //shape: CircularNotchedRectangle(),
       notchMargin: 6.0,
       color: Colors.transparent,
       elevation: 9.0,
@@ -27,7 +27,7 @@ class BottomBar extends StatelessWidget {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: <Widget>[
-                  Icon(Icons.home, color: Color(0xFFEF7532)),
+                  Icon(Icons.home, color: Color(0xFFF7AF39)),
                 ],
               )
             ),
