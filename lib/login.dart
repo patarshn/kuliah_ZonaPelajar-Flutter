@@ -84,7 +84,151 @@ class _LoginState extends State<Login> {
               height: MediaQuery.of(context).size.height,
               color: Color.fromARGB(255, 50,57,67),
               alignment: Alignment.center,
-              child:Column(
+              child:
+              Stack(
+                children: <Widget>[
+                  Column(
+                    children: <Widget>[
+                      Expanded(
+                        flex: 5,
+                        child: Container(
+                          decoration: BoxDecoration(color: Color(0xFF323943)),
+                        ),
+                      ),
+                      Expanded(
+                        flex: 5,
+                        child: Container(
+                          decoration: BoxDecoration(color: Colors.white),
+                        ),
+                      ),
+                    ],
+                  ),
+                  Container(
+                    child:Column(
+                children: <Widget>[
+                  Image.asset('assets/waifu.png', width: 200.0, height: 200.0,),
+                  Text("Login", style: TextStyle(color: Colors.white, fontSize: 25.0, fontWeight: FontWeight.bold),),
+                  SizedBox(height: 30,),
+                  Container(
+                    margin: const EdgeInsets.only(left: 20.0, right: 20.0),
+                    padding: const EdgeInsets.only(left: 10.0, right: 10.0),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(25.0),
+                        topRight: Radius.circular(25.0)
+                      )
+                    ),
+                    child: Column(
+                      children: <Widget>[
+                        Form(
+                          key: _key,
+                          child: Column(
+                            children: <Widget>[
+                              TextFormField(
+                                validator: (e) {
+                                  if (e.isEmpty) {
+                                    return "Please insert email";
+                                  }
+                                },
+                                onSaved: (e) => email = e,
+                                decoration: InputDecoration(
+                                  labelText: "Email",
+                                ),
+                              ),
+                              TextFormField(
+                                obscureText: _secureText,
+                                onSaved: (e) => password = e,
+                                decoration: InputDecoration(
+                                  labelText: "Password",
+                                  suffixIcon: IconButton(
+                                    onPressed: showHide,
+                                    icon: Icon(_secureText
+                                        ? Icons.visibility_off
+                                        : Icons.visibility),
+                                  ),
+                                ),
+                              ),
+                              /*MaterialButton(
+                                onPressed: () {
+                                  check();
+                                },
+                               child: Text("Login"),
+                               ),
+                               */
+                              SizedBox(height: 60,),
+                              SizedBox(
+                                height: 50,
+                                width: double.infinity,
+                                child: RaisedButton(
+                                  color: Color(0xFFF7AF39),
+                                  child: Text("Login", style: new TextStyle(fontWeight: FontWeight.bold,color: Colors.white)),
+                                  onPressed: () {
+                                    check();
+                                  },
+                                  shape: new RoundedRectangleBorder(
+                                    borderRadius: new BorderRadius.circular(30.0),
+                                  ),
+                                ),
+                              ),
+                              
+                              
+                              /*MaterialButton(
+                                onPressed: () {
+                                  Navigator.of(context)
+                                      .push(MaterialPageRoute<Null>(builder: (BuildContext context) {
+                                        return new Register();
+                                  }));
+                                },
+                                child: Text("Daftar"),
+                              ),*/
+                              
+                              /*RichText(
+                                text: new TextSpan(
+                                  style: new TextStyle(fontFamily: 'Velera', fontSize: 12.0,color: Colors.black),
+                                  children: <TextSpan>[
+                                    new TextSpan(text: "Don't have any account? ",),
+                                    new TextSpan(text: 'SIGN UP', style: new TextStyle(fontWeight: FontWeight.bold,color: Color(0xFFF7AF39)),),
+                                  ],
+                                ),
+                              ),*/
+                              SizedBox(height: 10,),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                //crossAxisAlignment: CrossAxisAlignment.center,
+                                children: <Widget>[
+                                  //Text("Don't have any account?",style: TextStyle(fontFamily: 'Velera', fontSize: 12.0,color: Colors.black)),
+                                  MaterialButton(
+                                    onPressed: () {
+                                      Navigator.of(context)
+                                          .push(MaterialPageRoute<Null>(builder: (BuildContext context) {
+                                            return new Register();
+                                      }));
+                                    },
+                                    child: RichText(
+                                      text: new TextSpan(
+                                        style: new TextStyle(fontFamily: 'Velera', fontSize: 12.0,color: Colors.black),
+                                        children: <TextSpan>[
+                                          new TextSpan(text: "Don't have any account? ",),
+                                          new TextSpan(text: 'SIGN UP', style: new TextStyle(fontWeight: FontWeight.bold,color: Color(0xFFF7AF39)),),
+                                        ],
+                                      ),
+                                    ),
+                                  )
+                                ],
+                              )
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+                  )
+                ],
+              ),
+              /*Column(
                 children: <Widget>[
                   Image.asset('assets/waifu.png', width: 200.0, height: 200.0,),
                   Text("Login", style: TextStyle(color: Colors.white, fontSize: 25.0, fontWeight: FontWeight.bold),),
@@ -150,7 +294,7 @@ class _LoginState extends State<Login> {
                     ),
                   ),
                 ],
-              ),
+              ),*/
             ),
           ),
         ),

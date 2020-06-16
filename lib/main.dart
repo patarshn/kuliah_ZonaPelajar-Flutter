@@ -5,6 +5,7 @@ import 'package:zonapelajar/bottom_bar.dart';
 import 'package:zonapelajar/my_schedule.dart';
 import 'package:zonapelajar/my_task.dart';
 import 'package:zonapelajar/add_new.dart';
+import 'package:zonapelajar/register.dart';
 void main() {
   runApp(MyApp());
 }
@@ -15,7 +16,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: MyHomePage(),
+      home: Register(),
       routes: <String, WidgetBuilder>{
       '/myschedule' : (BuildContext context) => new MySchedule(),
       '/mytask' : (BuildContext context) => new MyTask(),
