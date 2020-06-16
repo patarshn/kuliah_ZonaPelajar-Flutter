@@ -1,9 +1,13 @@
 //dari arie
+import 'package:zonapelajar/bottom_bar.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'register.dart';
 import 'package:dropdown_formfield/dropdown_formfield.dart';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
+
+
+
 void main() => runApp(new MaterialApp(
   home: new Login(),
   debugShowCheckedModeBanner: false,
