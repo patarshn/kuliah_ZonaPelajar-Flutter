@@ -1,68 +1,35 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-import 'package:zonapelajar/bottom_bar.dart';
-import 'package:zonapelajar/my_schedule.dart';
-import 'package:zonapelajar/my_task.dart';
-import 'package:zonapelajar/add_new.dart';
-void main() {
-  runApp(MyApp());
-}
-
-class MyApp extends StatelessWidget {
-  // This widget is the root of your application.
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      home: MyHomePage(),
-      routes: <String, WidgetBuilder>{
-      '/myschedule' : (BuildContext context) => new MySchedule(),
-      '/mytask' : (BuildContext context) => new MyTask(),
-      '/addnew' : (BuildContext context) => new AddNew(),
-    },
-    );
-  }
-}
-
-class MyHomePage extends StatefulWidget {
-  @override
-  _MyHomePageState createState() => _MyHomePageState();
-}
-
-class _MyHomePageState extends State<MyHomePage> with SingleTickerProviderStateMixin{
-  TabController _tabController;
-  
-  @override
-  void initState(){
-    super.initState();
-    _tabController = TabController(length: 3,vsync: this);
-  }
-
-  @override
+class AddNew extends StatelessWidget{
+  static const String routeName = '/addnew';
+  @override 
   Widget build(BuildContext context){
-    return Scaffold(
-      extendBody: true,
+    return new Scaffold(
       backgroundColor: Color(0xFF323943),
-      /*appBar: AppBar(
+      appBar: AppBar(
         backgroundColor: Colors.white,
         elevation: 0.0,
         centerTitle: true,
         leading: IconButton(
           icon: Icon(Icons.arrow_back, color: Color(0xFF545D68)),
-          onPressed: (){},
+          onPressed: () {},
         ),
-        title: Text('Home',
-        style: TextStyle(fontFamily: 'Varela', fontSize: 20.0, color: Color(0xFF545D68)),
-        ),
+        title: Text('Add New',
+            style: TextStyle(
+                fontFamily: 'Varela',
+                fontSize: 20.0,
+                color: Color(0xFF545D68))),
         actions: <Widget>[
           IconButton(
             icon: Icon(Icons.notifications_none, color: Color(0xFF545D68)),
-            onPressed: (){},
+            onPressed: () {
+              SystemNavigator.pop();
+              },
           ),
         ],
-      ),*/
-      body: Column(
+      ),
+    body: Column(
             mainAxisSize: MainAxisSize.max,
         children: <Widget>[
           Container(
@@ -71,7 +38,7 @@ class _MyHomePageState extends State<MyHomePage> with SingleTickerProviderStateM
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
                 SizedBox(height: 10.0),
-                new RichText(
+                /*new RichText(
                   text: new TextSpan(
                     style: new TextStyle(fontFamily: 'Velera', fontSize: 38.0,fontWeight: FontWeight.bold),
                     children: <TextSpan>[
@@ -91,34 +58,9 @@ class _MyHomePageState extends State<MyHomePage> with SingleTickerProviderStateM
                     ],
                   ),
                 ),
+          SizedBox(height: 15.0),*/
+          Image.asset("assets/illustration_addnew.png", width: 200),
           SizedBox(height: 15.0),
-          TabBar(
-            controller: _tabController,
-            indicatorColor: Colors.transparent,
-            labelColor: Color(0xFFC88D67),
-            isScrollable: true,
-            labelPadding: EdgeInsets.only(right: 45.0),
-            unselectedLabelColor: Color(0xFFCDCDCD),
-            tabs: [
-              Tab(
-                child: Text('07.30',
-                style: TextStyle(fontFamily: 'Varela', fontSize: 21.0)
-                ),
-              ),
-
-              Tab(
-                child: Text('Hello World 2',
-                style: TextStyle(fontFamily: 'Varela', fontSize: 21.0)
-                ),
-              ),
-
-              Tab(
-                child: Text('Hello World 3',
-                style: TextStyle(fontFamily: 'Varela', fontSize: 21.0)
-                ),
-              ),
-            ],
-          ),
               ],
             ),
           ),
@@ -139,7 +81,7 @@ class _MyHomePageState extends State<MyHomePage> with SingleTickerProviderStateM
         child: InkWell(
           splashColor: Colors.blue.withAlpha(30),
           onTap: () {
-            Navigator.of(context).pushNamed('/myschedule');
+            Navigator.of(context).pushNamed('/addschedule');
           },
           child: Container(
             width: MediaQuery.of(context).size.width/2 - 30.0,
@@ -151,7 +93,7 @@ class _MyHomePageState extends State<MyHomePage> with SingleTickerProviderStateM
               children: <Widget>[
                 Icon(Icons.access_time, size: 70.0,color: Color(0xFFF7AF39)),
                 SizedBox(height:10),
-                Text("My Schedule", style: TextStyle(fontSize: 20)),
+                Text("Add Schedule", style: TextStyle(fontSize: 20)),
               ],
             ),
           ),
@@ -160,7 +102,7 @@ class _MyHomePageState extends State<MyHomePage> with SingleTickerProviderStateM
         child: InkWell(
           splashColor: Colors.blue.withAlpha(30),
           onTap: () {
-            Navigator.of(context).pushNamed('/mytask');
+            Navigator.of(context).pushNamed('/addtask');
           },
           child: Container(
             width: MediaQuery.of(context).size.width/2 - 30.0,
@@ -171,7 +113,7 @@ class _MyHomePageState extends State<MyHomePage> with SingleTickerProviderStateM
               children: <Widget>[
                 Icon(Icons.format_list_numbered, size: 70.0,color: Color(0xFFF7AF39)),
                 SizedBox(height:10),
-                Text("My Task", style: TextStyle(fontSize: 20)),
+                Text("Add Task", style: TextStyle(fontSize: 20)),
               ],
             ),
           ),
@@ -187,16 +129,7 @@ class _MyHomePageState extends State<MyHomePage> with SingleTickerProviderStateM
           ),
         ],
       ),
-      
-     floatingActionButton: FloatingActionButton(
-      onPressed: () {
-        Navigator.of(context).pushNamed('/addnew');
-      },
-      backgroundColor: Color(0xFFF7AF39),
-      child: Icon(Icons.add),
-      ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-      bottomNavigationBar: BottomBar(),
     );
+      
   }
 }
