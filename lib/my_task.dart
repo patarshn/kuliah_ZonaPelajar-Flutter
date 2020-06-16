@@ -1,140 +1,96 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+import 'package:date_time_format/date_time_format.dart';
 
-class MyTask extends StatelessWidget{
-  static const String routeName = '/mytask';
-  @override 
-  Widget build(BuildContext context){
-    return new Scaffold(
-      
-      appBar: AppBar(
-        backgroundColor: Colors.white,
-        elevation: 0.0,
-        centerTitle: true,
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: Color(0xFF545D68)),
-          onPressed: () {},
-        ),
-        title: Text('My Task',
-            style: TextStyle(
-                fontFamily: 'Varela',
-                fontSize: 20.0,
-                color: Color(0xFF545D68))),
-        actions: <Widget>[
-          IconButton(
-            icon: Icon(Icons.notifications_none, color: Color(0xFF545D68)),
-            onPressed: () {
-              SystemNavigator.pop();
-              },
-          ),
-        ],
-      ),
-    body: Column(
-            mainAxisSize: MainAxisSize.max,
-        children: <Widget>[
-          Container(
-            padding: EdgeInsets.only(left:20.0,right: 20.0,top: 20.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                SizedBox(height: 10.0),
-                
-          Text("  OnGoing",style: TextStyle(fontSize: 25, color: Color(0xFF323943))),
-          SizedBox(height: 15.0),
-          Card(
-           shape: RoundedRectangleBorder(
-    borderRadius: BorderRadius.circular(30.0),
-  ), 
+void main() => runApp(new MaterialApp(
+  home: new MyTask(),
+  debugShowCheckedModeBanner: false,
+));
+
+class MyTask extends StatefulWidget {
+  @override
+  _MyTaskState createState() => new _MyTaskState();
+}
+
+class _MyTaskState extends State<MyTask> {
+  final dateTime = DateTime.now();
+  Widget build(BuildContext context) {
+    return SafeArea(
+      child:Scaffold(
+      appBar: AppBar(title: Text("My Task", style: TextStyle(color: Colors.black),), backgroundColor: Colors.white,),
+      body: SingleChildScrollView(
         child: Container(
+          width: MediaQuery.of(context).size.width,
+          child: Column(
+            children: <Widget>[
+              Container(
+                width: MediaQuery.of(context).size.width,
+                height: MediaQuery.of(context).size.height/2,
+                color: Colors.white,
+                padding: EdgeInsets.all(15.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    Padding(
+                      padding: EdgeInsets.all(10),
+                      child: Text("Ongoing", textAlign: TextAlign.left, style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20.0),),
+                    ),
 
-           // color: Color(0xFF323943),
-            decoration: BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(30)), color: Color(0xFF323943)),
-            width: MediaQuery.of(context).size.width,
-              height: 120,
-            child: 
-            Container(
-              padding: EdgeInsets.all(10),
-              child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                Text("Mobile Lanjut", style: TextStyle(fontSize: 18, color: Colors.white)),
-                SizedBox(height:10),
-                Text("Pembuatan Mockup", style: TextStyle(fontSize: 20, color: Color(0xFFF7AF39))),
-                SizedBox(height:10),
-                Container(
-                  child: Text("6 hours left", style: TextStyle(fontSize: 15,color: Colors.white)),
-                  alignment: Alignment.bottomRight,
+                  ],
                 ),
-                
-              ],
-            ),
-            ),
-            
-          ),
-        
-        
-      ),
-      SizedBox(height: 15.0),
-              ],
-            ),
-          ),
-          Expanded(
-            child: Container(
-              padding: EdgeInsets.all(20),
-              decoration: BoxDecoration(borderRadius: BorderRadius.only(topRight: Radius.circular(30), topLeft: Radius.circular(30)), color: Color(0xFF323943)),
-              child: 
-              Column(
-                //mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: <Widget>[
-                  SizedBox(height: 10.0),
-                  Container(
-                    alignment: Alignment.topLeft,
-                    child: Text("  Finished",style: TextStyle(fontSize: 25, color: Color(0xFFF7AF39))),
-                  ),
-                  
-                  SizedBox(height: 15.0),
-          Card(
-           shape: RoundedRectangleBorder(
-    borderRadius: BorderRadius.circular(30.0),
-  ), 
-        child: Container(
-
-           // color: Color(0xFF323943),
-            //decoration: BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(30)), color: Color(0xFF323943)),
-            width: MediaQuery.of(context).size.width,
-              height: 120,
-            child: 
-            Container(
-              padding: EdgeInsets.all(10),
-              child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                Text("Bahasa Indonesia", style: TextStyle(fontSize: 18, color: Color(0xFF323943))),
-                SizedBox(height:10),
-                Text("Kalimat Efektif", style: TextStyle(fontSize: 20, color: Color(0xFFF7AF39))),
-                SizedBox(height:10)
-                
-              ],
-            ),
-            ),
-            
-          ),
-        
-        
-      ),
-                ],  
               ),
-              
-            ),
-          
+
+              Container(
+                width: MediaQuery.of(context).size.width,
+                height: MediaQuery.of(context).size.height/2,
+                padding: EdgeInsets.all(15.0),
+                decoration: BoxDecoration(
+                  color: Color.fromARGB(255, 50,57,67),
+                  borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(25.0),
+                    topRight: Radius.circular(25.0)
+                  )
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    Padding(
+                      padding: EdgeInsets.all(10),
+                      child: Text("Finished", textAlign: TextAlign.left, style: TextStyle(color: Colors.orange,fontWeight: FontWeight.bold, fontSize: 20.0),),
+                    ),
+                  ],
+                ),
+              ),
+            ],
           ),
-        ],
+        ),
       ),
-      
+      bottomNavigationBar: Container(
+      child: BottomAppBar(
+          shape: CircularNotchedRectangle(),
+          child: BottomNavigationBar(
+      items: const <BottomNavigationBarItem>[
+        BottomNavigationBarItem(
+          icon: Icon(Icons.home),
+          title: Text('Home'),
+        ),
+        BottomNavigationBarItem(
+          icon: Icon(Icons.person),
+          title: Text('Person'),
+        ),
+      ],
+      showSelectedLabels: false,
+      showUnselectedLabels: false,
+      selectedItemColor: Colors.amber[800],
+    ),
+          ),
+    ),
+      floatingActionButton: FloatingActionButton(
+        backgroundColor: Colors.orange,
+        child: Icon(Icons.add),
+        onPressed: () {}
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+    ),
     );
-      
   }
 }
