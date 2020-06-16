@@ -1,205 +1,306 @@
+import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+import 'register.dart';
+import 'home.dart';
+void main() => runApp(new MaterialApp(
+  home: new Login(),
+  debugShowCheckedModeBanner: false,
+));
 
-import 'package:zonapelajar/bottom_bar.dart';
-import 'package:zonapelajar/login.dart';
-import 'package:zonapelajar/my_schedule.dart';
-import 'package:zonapelajar/my_task.dart';
-import 'package:zonapelajar/add_new.dart';
-import 'package:zonapelajar/register.dart';
-void main() {
-  runApp(MyApp());
+class Login extends StatefulWidget {
+  @override
+  _LoginState createState() => new _LoginState();
 }
 
-class MyApp extends StatelessWidget {
-  // This widget is the root of your application.
-  @override
+class _LoginState extends State<Login> {
+ String email, password;
+ final _key = new GlobalKey<FormState>();
+
+ bool _secureText = true;
+
+ showHide() {
+   setState(() {
+     _secureText = !_secureText;
+   });
+ }
+ check() {
+   final form = _key.currentState;
+   if (form.validate()) {
+     form.save();
+     login();
+   }
+ }
+ login() async {
+   final response = await http.post("https://panel.serarinne.my.id/zonapelajar/login.php",
+       body: {"email": email, "password": password});
+   String status = response.body;
+   if (status == "1") {
+     Navigator
+    .of(context)
+    .pushReplacement(new MaterialPageRoute(builder: (BuildContext context) => Home()));
+   } else if (status == "0") {
+     _showDialog("Email atau Password Anda Salah....");
+   } else {
+     _showDialog("Terjadi Kesalahan, Silahkan Ulangi Lagi...");
+   }
+ }
+
+ void _showDialog (String message) {
+    showDialog(
+              context: context,
+              builder: (BuildContext context){
+                return AlertDialog(
+                  backgroundColor: Colors.deepPurple,
+                  shape: ContinuousRectangleBorder(
+                    borderRadius: BorderRadius.all(Radius.circular(20))
+                  ),
+                  content: Text(message, style: TextStyle(color: Colors.white),),
+                  actions: <Widget>[
+                    new FlatButton(
+                shape: RoundedRectangleBorder(borderRadius:BorderRadius.circular(22.0) ),
+                color: Colors.white,
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    Text("Close", style: new TextStyle(color: Colors.deepPurple)),
+                  ],
+                ),
+                onPressed: () {
+                        Navigator.of(context).pop();
+                      },
+              ),
+                  ],
+                );
+              }
+          );
+  }
+
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      home: Login(),
-      routes: <String, WidgetBuilder>{
-      '/myschedule' : (BuildContext context) => new MySchedule(),
-      '/mytask' : (BuildContext context) => new MyTask(),
-      '/addnew' : (BuildContext context) => new AddNew(),
-      '/home' : (BuildContext context) => new MyHomePage(),
-    },
-    );
-  }
-}
-
-class MyHomePage extends StatefulWidget {
-  @override
-  _MyHomePageState createState() => _MyHomePageState();
-}
-
-class _MyHomePageState extends State<MyHomePage> with SingleTickerProviderStateMixin{
-  TabController _tabController;
-  
-  @override
-  void initState(){
-    super.initState();
-    _tabController = TabController(length: 3,vsync: this);
-  }
-
-  @override
-  Widget build(BuildContext context){
-    return Scaffold(
-      extendBody: true,
-      backgroundColor: Color(0xFF323943),
-      /*appBar: AppBar(
-        backgroundColor: Colors.white,
-        elevation: 0.0,
-        centerTitle: true,
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: Color(0xFF545D68)),
-          onPressed: (){},
-        ),
-        title: Text('Home',
-        style: TextStyle(fontFamily: 'Varela', fontSize: 20.0, color: Color(0xFF545D68)),
-        ),
-        actions: <Widget>[
-          IconButton(
-            icon: Icon(Icons.notifications_none, color: Color(0xFF545D68)),
-            onPressed: (){},
-          ),
-        ],
-      ),*/
-      body: Column(
-            mainAxisSize: MainAxisSize.max,
-        children: <Widget>[
-          Container(
-            padding: EdgeInsets.only(left:20.0,right: 20.0,top: 20.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                SizedBox(height: 10.0),
-                new RichText(
-                  text: new TextSpan(
-                    style: new TextStyle(fontFamily: 'Velera', fontSize: 38.0,fontWeight: FontWeight.bold),
-                    children: <TextSpan>[
-                      new TextSpan(text: 'Welcome '),
-                      new TextSpan(text: 'Yosua!', style: new TextStyle(fontWeight: FontWeight.bold,color: Color(0xFFF7AF39)),),
-                    ],
-                  ),
-                ),
-          SizedBox(height: 15.0),
-          new RichText(
-                  text: new TextSpan(
-                    style: new TextStyle(fontFamily: 'Velera', fontSize: 26.0,fontWeight: FontWeight.bold),
-                    children: <TextSpan>[
-                      new TextSpan(text: "It's "),
-                      new TextSpan(text: 'Tuesday ', style: new TextStyle(fontWeight: FontWeight.bold,color: Color(0xFFF7AF39)),),
-                      new TextSpan(text: '07:30'),
-                    ],
-                  ),
-                ),
-          SizedBox(height: 15.0),
-          TabBar(
-            controller: _tabController,
-            indicatorColor: Colors.transparent,
-            labelColor: Color(0xFFC88D67),
-            isScrollable: true,
-            labelPadding: EdgeInsets.only(right: 45.0),
-            unselectedLabelColor: Color(0xFFCDCDCD),
-            tabs: [
-              Tab(
-                child: Text('07.30',
-                style: TextStyle(fontFamily: 'Varela', fontSize: 21.0)
-                ),
-              ),
-
-              Tab(
-                child: Text('Hello World 2',
-                style: TextStyle(fontFamily: 'Varela', fontSize: 21.0)
-                ),
-              ),
-
-              Tab(
-                child: Text('Hello World 3',
-                style: TextStyle(fontFamily: 'Varela', fontSize: 21.0)
-                ),
-              ),
-            ],
-          ),
-              ],
-            ),
-          ),
-          Expanded(
+    return SafeArea(
+      child:Scaffold(
+        body: SingleChildScrollView(
+          child: Center(
             child: Container(
-              decoration: BoxDecoration(borderRadius: BorderRadius.only(topRight: Radius.circular(30), topLeft: Radius.circular(30)), color: Colors.white),
-              child: 
-              Column(
-                //mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
+              width: MediaQuery.of(context).size.width,
+              height: MediaQuery.of(context).size.height,
+              color: Color.fromARGB(255, 50,57,67),
+              alignment: Alignment.center,
+              child:
+              Stack(
                 children: <Widget>[
-                  SizedBox(height: 50.0),
-                  Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              
+                  Column(
+                    children: <Widget>[
+                      Expanded(
+                        flex: 5,
+                        child: Container(
+                          decoration: BoxDecoration(color: Color(0xFF323943)),
+                        ),
+                      ),
+                      Expanded(
+                        flex: 5,
+                        child: Container(
+                          decoration: BoxDecoration(color: Colors.white),
+                        ),
+                      ),
+                    ],
+                  ),
+                  Container(
+                    child:Column(
                 children: <Widget>[
-                  Card(
-        child: InkWell(
-          splashColor: Colors.blue.withAlpha(30),
-          onTap: () {
-            Navigator.of(context).pushNamed('/myschedule');
-          },
-          child: Container(
-            width: MediaQuery.of(context).size.width/2 - 30.0,
-              height: MediaQuery.of(context).size.width/2,
-            child: 
-            Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-              children: <Widget>[
-                Icon(Icons.access_time, size: 70.0,color: Color(0xFFF7AF39)),
-                SizedBox(height:10),
-                Text("My Schedule", style: TextStyle(fontSize: 20)),
-              ],
-            ),
-          ),
-        ),
-      ),Card(
-        child: InkWell(
-          splashColor: Colors.blue.withAlpha(30),
-          onTap: () {
-            Navigator.of(context).pushNamed('/mytask');
-          },
-          child: Container(
-            width: MediaQuery.of(context).size.width/2 - 30.0,
-              height: MediaQuery.of(context).size.width/2,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-              children: <Widget>[
-                Icon(Icons.format_list_numbered, size: 70.0,color: Color(0xFFF7AF39)),
-                SizedBox(height:10),
-                Text("My Task", style: TextStyle(fontSize: 20)),
-              ],
-            ),
-          ),
-        ),
-      ),
+                  Image.asset('assets/waifu.png', width: 200.0, height: 200.0,),
+                  Text("Login", style: TextStyle(color: Colors.white, fontSize: 25.0, fontWeight: FontWeight.bold),),
+                  SizedBox(height: 30,),
+                  Container(
+                    margin: const EdgeInsets.only(left: 20.0, right: 20.0),
+                    padding: const EdgeInsets.only(left: 10.0, right: 10.0),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(25.0),
+                        topRight: Radius.circular(25.0)
+                      )
+                    ),
+                    child: Column(
+                      children: <Widget>[
+                        Form(
+                          key: _key,
+                          child: Column(
+                            children: <Widget>[
+                              TextFormField(
+                                validator: (e) {
+                                  if (e.isEmpty) {
+                                    return "Please insert email";
+                                  }
+                                },
+                                onSaved: (e) => email = e,
+                                decoration: InputDecoration(
+                                  labelText: "Email",
+                                ),
+                              ),
+                              TextFormField(
+                                obscureText: _secureText,
+                                onSaved: (e) => password = e,
+                                decoration: InputDecoration(
+                                  labelText: "Password",
+                                  suffixIcon: IconButton(
+                                    onPressed: showHide,
+                                    icon: Icon(_secureText
+                                        ? Icons.visibility_off
+                                        : Icons.visibility),
+                                  ),
+                                ),
+                              ),
+                              /*MaterialButton(
+                                onPressed: () {
+                                  check();
+                                },
+                               child: Text("Login"),
+                               ),
+                               */
+                              SizedBox(height: 60,),
+                              SizedBox(
+                                height: 50,
+                                width: double.infinity,
+                                child: RaisedButton(
+                                  color: Color(0xFFF7AF39),
+                                  child: Text("Login", style: new TextStyle(fontWeight: FontWeight.bold,color: Colors.white)),
+                                  onPressed: () {
+                                    check();
+                                  },
+                                  shape: new RoundedRectangleBorder(
+                                    borderRadius: new BorderRadius.circular(30.0),
+                                  ),
+                                ),
+                              ),
+                              
+                              
+                              /*MaterialButton(
+                                onPressed: () {
+                                  Navigator.of(context)
+                                      .push(MaterialPageRoute<Null>(builder: (BuildContext context) {
+                                        return new Register();
+                                  }));
+                                },
+                                child: Text("Daftar"),
+                              ),*/
+                              
+                              /*RichText(
+                                text: new TextSpan(
+                                  style: new TextStyle(fontFamily: 'Velera', fontSize: 12.0,color: Colors.black),
+                                  children: <TextSpan>[
+                                    new TextSpan(text: "Don't have any account? ",),
+                                    new TextSpan(text: 'SIGN UP', style: new TextStyle(fontWeight: FontWeight.bold,color: Color(0xFFF7AF39)),),
+                                  ],
+                                ),
+                              ),*/
+                              SizedBox(height: 10,),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                //crossAxisAlignment: CrossAxisAlignment.center,
+                                children: <Widget>[
+                                  //Text("Don't have any account?",style: TextStyle(fontFamily: 'Velera', fontSize: 12.0,color: Colors.black)),
+                                  MaterialButton(
+                                    onPressed: () {
+                                      Navigator.of(context)
+                                          .push(MaterialPageRoute<Null>(builder: (BuildContext context) {
+                                            return new Register();
+                                      }));
+                                    },
+                                    child: RichText(
+                                      text: new TextSpan(
+                                        style: new TextStyle(fontFamily: 'Velera', fontSize: 12.0,color: Colors.black),
+                                        children: <TextSpan>[
+                                          new TextSpan(text: "Don't have any account? ",),
+                                          new TextSpan(text: 'SIGN UP', style: new TextStyle(fontWeight: FontWeight.bold,color: Color(0xFFF7AF39)),),
+                                        ],
+                                      ),
+                                    ),
+                                  )
+                                ],
+                              )
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
                 ],
               ),
-                ],  
+                  )
+                ],
               ),
-              
+              /*Column(
+                children: <Widget>[
+                  Image.asset('assets/waifu.png', width: 200.0, height: 200.0,),
+                  Text("Login", style: TextStyle(color: Colors.white, fontSize: 25.0, fontWeight: FontWeight.bold),),
+                  Container(
+                    margin: const EdgeInsets.only(left: 20.0, right: 20.0),
+                    padding: const EdgeInsets.only(left: 10.0, right: 10.0),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(25.0),
+                        topRight: Radius.circular(25.0)
+                      )
+                    ),
+                    child: Column(
+                      children: <Widget>[
+                        Form(
+                          key: _key,
+                          child: Column(
+                            children: <Widget>[
+                              TextFormField(
+                                validator: (e) {
+                                  if (e.isEmpty) {
+                                    return "Please insert email";
+                                  }
+                                },
+                                onSaved: (e) => email = e,
+                                decoration: InputDecoration(
+                                  labelText: "Email",
+                                ),
+                              ),
+                              TextFormField(
+                                obscureText: _secureText,
+                                onSaved: (e) => password = e,
+                                decoration: InputDecoration(
+                                  labelText: "Password",
+                                  suffixIcon: IconButton(
+                                    onPressed: showHide,
+                                    icon: Icon(_secureText
+                                        ? Icons.visibility_off
+                                        : Icons.visibility),
+                                  ),
+                                ),
+                              ),
+                              MaterialButton(
+                                onPressed: () {
+                                  check();
+                                },
+                                child: Text("Login"),
+                              ),
+                              MaterialButton(
+                                onPressed: () {
+                                  Navigator.of(context)
+                                      .push(MaterialPageRoute<Null>(builder: (BuildContext context) {
+                                        return new Register();
+                                  }));
+                                },
+                                child: Text("Daftar"),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),*/
             ),
-          
           ),
-        ],
+        ),
       ),
-      
-     floatingActionButton: FloatingActionButton(
-      onPressed: () {
-        Navigator.of(context).pushNamed('/addnew');
-      },
-      backgroundColor: Color(0xFFF7AF39),
-      child: Icon(Icons.add),
-      ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-      bottomNavigationBar: BottomBar(),
     );
   }
 }
