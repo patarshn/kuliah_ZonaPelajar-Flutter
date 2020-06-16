@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:date_time_format/date_time_format.dart';
+import 'package:zonapelajar/bottom_bar.dart';
 
 void main() => runApp(new MaterialApp(
   home: new Add(),
