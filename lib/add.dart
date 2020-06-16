@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:date_time_format/date_time_format.dart';
+import 'package:zonapelajar/add_schedule.dart';
 import 'package:zonapelajar/bottom_bar.dart';
 
 void main() => runApp(new MaterialApp(
@@ -75,7 +76,10 @@ class _AddState extends State<Add> {
         child: InkWell(
           splashColor: Colors.blue.withAlpha(30),
           onTap: () {
-            Navigator.of(context).pushNamed('/addschedule');
+            Navigator.of(context)
+                .push(MaterialPageRoute<Null>(builder: (BuildContext context) {
+                  return new AddSchedule();
+            }));
           },
           child: Container(
             width: MediaQuery.of(context).size.width/2 - 30.0,

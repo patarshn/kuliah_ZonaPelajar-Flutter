@@ -24,12 +24,16 @@ class _HomeState extends State<Home> {
 
   Future<Null> getData() async {
     final dt = await http.get(udata);
+    debugPrint(udata);
+    print(udata);
     final rsen = json.decode(dt.body);
 
     setState(() {
       for (Map dsen in rsen) {
         _data.add(Data.fromJson(dsen));
+        //print(Data.fromJson(dsen));
       }
+      print(_data.length);
     });
 }
 
@@ -124,6 +128,62 @@ void initState() {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
+                    Card(
+        child: InkWell(
+          splashColor: Colors.blue.withAlpha(30),
+          onTap: () {
+            Navigator.of(context)
+                                .push(MaterialPageRoute<Null>(builder: (BuildContext context) {
+                                  return new MySch();
+                            }));
+          },
+          child: Container(
+            width: MediaQuery.of(context).size.width/2 - 30.0,
+              height: MediaQuery.of(context).size.width/2,
+            child: 
+            Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+              children: <Widget>[
+                Icon(Icons.access_time, size: 70.0,color: Color(0xFFF7AF39)),
+                SizedBox(height:10),
+                Text("My Schedule", style: TextStyle(fontSize: 20)),
+              ],
+            ),
+          ),
+        ),
+      ),
+      Card(
+        child: InkWell(
+          splashColor: Colors.blue.withAlpha(30),
+          onTap: () {
+            Navigator.of(context)
+                                .push(MaterialPageRoute<Null>(builder: (BuildContext context) {
+                                  return new MyTask();
+                            }));
+          },
+          child: Container(
+            width: MediaQuery.of(context).size.width/2 - 30.0,
+              height: MediaQuery.of(context).size.width/2,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+              children: <Widget>[
+                Icon(Icons.format_list_numbered, size: 70.0,color: Color(0xFFF7AF39)),
+                SizedBox(height:10),
+                Text("My Task", style: TextStyle(fontSize: 20)),
+              ],
+            ),
+          ),
+        ),
+      ),
+
+                  ],
+                ),
+                /*Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
                     FlatButton.icon(onPressed: (){Navigator.of(context)
                                 .push(MaterialPageRoute<Null>(builder: (BuildContext context) {
                                   return new MySch();
@@ -134,7 +194,7 @@ void initState() {
                                   return new MyTask();
                             }));}, icon: Icon(Icons.list), label: Text("My Task"))
                   ],
-                ),
+                ),*/
               ),
             ],
           ),
@@ -177,6 +237,8 @@ void initState() {
 List<Data> _data = [];
 
 final String udata = 'https://panel.serarinne.my.id/zonapelajar/home.php?hari='+ DateTimeFormat.format(DateTime.now(), format: 'l');
+
+
 class Data {
   final String nama, jam, ruang;
 

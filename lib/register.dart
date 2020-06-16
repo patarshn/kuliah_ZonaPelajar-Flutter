@@ -1,5 +1,6 @@
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
+import 'package:zonapelajar/add_schedule.dart';
 import 'package:zonapelajar/login.dart';
 void main() => runApp(new MaterialApp(
   home: new Register(),

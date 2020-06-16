@@ -2,17 +2,18 @@ import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:dropdown_formfield/dropdown_formfield.dart';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
+import 'package:zonapelajar/home.dart';
 void main() => runApp(new MaterialApp(
-  home: new Login(),
+  home: new AddSchedule(),
   debugShowCheckedModeBanner: false,
 ));
 
-class Login extends StatefulWidget {
+class AddSchedule extends StatefulWidget {
   @override
-  _LoginState createState() => new _LoginState();
+  _AddScheduleState createState() => new _AddScheduleState();
 }
 
-class _LoginState extends State<Login> {
+class _AddScheduleState extends State<AddSchedule> {
  String hari, nama, ruang, jam = "00:00", _jam = "00:00";
  final _key = new GlobalKey<FormState>();
  void _setJam() {
@@ -29,10 +30,10 @@ class _LoginState extends State<Login> {
    final form = _key.currentState;
    if (form.validate()) {
      form.save();
-     login();
+     addSchedule();
    }
  }
- login() async {
+ addSchedule() async {
    final response = await http.post("https://panel.serarinne.my.id/zonapelajar/ischedule.php",
        body: {"nama": nama, "ruang": ruang, "jam": jam, "hari": hari});
    String status = response.body;
@@ -67,7 +68,10 @@ class _LoginState extends State<Login> {
                   ],
                 ),
                 onPressed: () {
-                        Navigator.of(context).pop();
+                        Navigator.of(context)
+                            .push(MaterialPageRoute<Null>(builder: (BuildContext context) {
+                              return new Home();
+                        }));
                       },
               ),
                   ],
