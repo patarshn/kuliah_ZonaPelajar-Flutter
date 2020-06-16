@@ -1,18 +1,43 @@
 import 'package:flutter/material.dart';
 import 'package:date_time_format/date_time_format.dart';
+import 'my_schedule.dart';
+import 'my_task.dart';
+import 'add.dart';
+import 'dart:async';
+import 'dart:convert';
+
+import 'package:http/http.dart' as http;
 
 void main() => runApp(new MaterialApp(
-  home: new Add(),
+  home: new Home(),
   debugShowCheckedModeBanner: false,
 ));
 
-class Add extends StatefulWidget {
+class Home extends StatefulWidget {
   @override
-  _AddState createState() => new _AddState();
+  _HomeState createState() => new _HomeState();
 }
 
-class _AddState extends State<Add> {
+class _HomeState extends State<Home> {
   final dateTime = DateTime.now();
+
+  Future<Null> getData() async {
+    final dt = await http.get(udata);
+    final rsen = json.decode(dt.body);
+
+    setState(() {
+      for (Map dsen in rsen) {
+        _data.add(Data.fromJson(dsen));
+      }
+    });
+}
+
+@override
+void initState() {
+    super.initState();
+
+    getData();
+}
   Widget build(BuildContext context) {
     return SafeArea(
       child:Scaffold(
@@ -50,6 +75,34 @@ class _AddState extends State<Add> {
                         ],
                       ),
                     ),
+                    SizedBox(
+        height: 100.0,
+        width: MediaQuery.of(context).size.width,
+        child: ListView.builder(
+          physics: ClampingScrollPhysics(),
+          shrinkWrap: true,
+          scrollDirection: Axis.horizontal,
+          itemCount: _data.length,
+          itemBuilder: (BuildContext context, int index) => Card(
+            shape: RoundedRectangleBorder(
+    side: BorderSide(color: Colors.white70, width: 1),
+    borderRadius: BorderRadius.circular(10),
+  ),
+                child: Padding(
+                  padding: EdgeInsets.only(top: 10.0, bottom: 10.0, left: 25.0, right: 25.0),
+                  child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    Text(_data[index].jam, style: TextStyle(color: Colors.black, fontSize: 14.0, fontWeight: FontWeight.bold),),
+                    Text(_data[index].nama, style: TextStyle(color: Colors.orange, fontSize: 14.0, fontWeight: FontWeight.bold),),
+                    Text(_data[index].ruang, style: TextStyle(color: Colors.black, fontSize: 14.0, fontWeight: FontWeight.bold),),
+                  ],
+                ),
+                ),
+              ),
+        ),
+      ),
                   ],
                 ),
               ),
@@ -70,50 +123,15 @@ class _AddState extends State<Add> {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
-                    Card(
-        child: InkWell(
-          splashColor: Colors.blue.withAlpha(30),
-          onTap: () {
-            Navigator.of(context).pushNamed('/addschedule');
-          },
-          child: Container(
-            width: MediaQuery.of(context).size.width/2 - 30.0,
-              height: MediaQuery.of(context).size.width/2,
-            child: 
-            Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-              children: <Widget>[
-                Icon(Icons.access_time, size: 70.0,color: Color(0xFFF7AF39)),
-                SizedBox(height:10),
-                Text("Add Schedule", style: TextStyle(fontSize: 20)),
-              ],
-            ),
-          ),
-        ),
-      ),
-      Card(
-        child: InkWell(
-          splashColor: Colors.blue.withAlpha(30),
-          onTap: () {
-            Navigator.of(context).pushNamed('/addtask');
-          },
-          child: Container(
-            width: MediaQuery.of(context).size.width/2 - 30.0,
-              height: MediaQuery.of(context).size.width/2,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-              children: <Widget>[
-                Icon(Icons.format_list_numbered, size: 70.0,color: Color(0xFFF7AF39)),
-                SizedBox(height:10),
-                Text("Add Task", style: TextStyle(fontSize: 20)),
-              ],
-            ),
-          ),
-        ),
-      ),
-
+                    FlatButton.icon(onPressed: (){Navigator.of(context)
+                                .push(MaterialPageRoute<Null>(builder: (BuildContext context) {
+                                  return new MySch();
+                            }));}, 
+                    icon: Icon(Icons.access_time), label: Text("My Schedule")),
+                    FlatButton.icon(onPressed: (){Navigator.of(context)
+                                .push(MaterialPageRoute<Null>(builder: (BuildContext context) {
+                                  return new MyTask();
+                            }));}, icon: Icon(Icons.list), label: Text("My Task"))
                   ],
                 ),
               ),
@@ -144,10 +162,30 @@ class _AddState extends State<Add> {
       floatingActionButton: FloatingActionButton(
         backgroundColor: Colors.orange,
         child: Icon(Icons.add),
-        onPressed: () {}
+        onPressed: (){Navigator.of(context)
+                                .push(MaterialPageRoute<Null>(builder: (BuildContext context) {
+                                  return new Add();
+                            }));}
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
     ),
+    );
+  }
+}
+
+List<Data> _data = [];
+
+final String udata = 'https://panel.serarinne.my.id/zonapelajar/home.php?hari='+ DateTimeFormat.format(DateTime.now(), format: 'l');
+class Data {
+  final String nama, jam, ruang;
+
+  Data({this.nama, this.jam, this.ruang});
+
+  factory Data.fromJson(Map<String, dynamic> json) {
+    return new Data(
+      nama: json['nama'],
+      jam: json['jam'],
+      ruang: json['ruang'],
     );
   }
 }
